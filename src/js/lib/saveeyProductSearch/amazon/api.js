@@ -1,6 +1,7 @@
 import signAsync from './signAsync'
 import getXmlFromUrl from './getXmlFromUrl'
 import queryParamsSorted from './queryParamsSorted'
+import xmlNodeToJson from '../common/xmlNodeToJson'
 
 const getNowTimestamp = () => new Date().toISOString()
 
@@ -45,6 +46,9 @@ export default class {
           AWSAccessKeyId: this.awsId,
           AssociateTag: this.awsTag,
           operation,
+          responseGroup,
+          searchIndex,
+          service,
           timestamp: getNowTimestamp(),
           ...rest,
         })
@@ -55,7 +59,7 @@ export default class {
     const url = `${location.protocol}//${endpoint}${uri}?${signedQuery}`
 
     const xml = await getXmlFromUrl(url)
-    return xml
+    return xmlNodeToJson(xml)
   }
 
   itemSearch = this.makeOperation('ItemSearch')
