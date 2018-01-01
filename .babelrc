@@ -1,11 +1,13 @@
 {
   "presets": [
-    "react"
+    "react", "stage-0"
   ],
   "env": {
     "development": {
       "presets":["react-hmre"]
     }
   },
-  "plugins": ["transform-export-extensions"]
+  "plugins": [
+    "transform-export-extensions",
+  ]
 }

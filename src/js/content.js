@@ -1,6 +1,8 @@
-import { detectBuyButton } from "./lib/saveeyAnalyzer/buyButton"
+import { detect } from "./lib/saveeyAnalyzer"
+import { amazonItemSearch } from './lib/saveeyProductSearch'
 
-const buyBytton = detectBuyButton(document.body)
-if (buyButton) {
-  buyButton.style.border = '2px solid red'
+const { productName } = detect(document.body)
+
+if (productName) {
+  amazonItemSearch(productName)
 }

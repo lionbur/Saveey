@@ -1,7 +1,7 @@
-import React from "react";
+import React, { Component } from "react"
 import icon from "../../img/icon-128.png"
 
-export default class extends React.Component {
+export default class extends Component {
   render () {
     return (
       <div>
@@ -10,4 +10,4 @@ export default class extends React.Component {
       </div>
     )
   }
-};
+}
