@@ -19,6 +19,7 @@ export default class {
   awsTag = null
   awsSecret = null
   endpoint = 'webservices.amazon.com'
+//  endpoint = 'webservices.amazon.co.uk'
   uri = '/onca/xml'
 
   constructor ({ awsId, awsTag, awsSecret }) {
@@ -56,11 +57,12 @@ export default class {
     )
 
     const { endpoint, uri  } = this
-    const url = `${location.protocol}//${endpoint}${uri}?${signedQuery}`
+    const url = `https://${endpoint}${uri}?${signedQuery}`
 
-    const xml = await getXmlFromUrl(url)
-    return xmlNodeToJson(xml)
+    return this.fetch(url)
   }
+
+  fetch = async url => xmlNodeToJson(await getXmlFromUrl(url))
 
   itemSearch = this.makeOperation('ItemSearch')
 }

@@ -36,6 +36,10 @@
     "http://*/*",
     "https://*/*"
   ],
+  "web_accessible_resources": [
+    "content.css",
+    "inject.html"
+  ],
   "manifest_version": 2,
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }

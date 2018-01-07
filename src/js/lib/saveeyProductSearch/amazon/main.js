@@ -6,6 +6,7 @@ import { productNameToKeywords, findCommonWords } from '../common'
 
 const awsId = 'AKIAJUI45MRHWJVMOZKA'
 const awsTag = 'saveey2018-20'
+//const awsTag = 'saveey2018-21'
 
 const secretKey1 = 'UgWpEOjWiD+kmVSB6t1ur'
 const secretKey2 = '4vnXFdpAe7VmGhOAFq'
@@ -24,8 +25,20 @@ export const amazonItemSearch = async productName => {
   ))
     .toLowerCase()
 
-  const results = await api.itemSearch({ keywords })
-  const items = castArray(get(results, 'itemSearchResponse.items.item'))
+  let itemPage = 1
+  let results = await api.itemSearch({ keywords, itemPage })
+  const totalResults = parseInt(get(results, 'itemSearchResponse.items.totalResults'))
+  const totalPages = parseInt(get(results, 'itemSearchResponse.items.totalPages'))
+  const desiredResults = Math.min(10, totalResults)
+  const desiredPages = Math.min(1, totalPages)
+  let items = castArray(get(results, 'itemSearchResponse.items.item'))
+
+  while ((items.length < desiredResults) && (itemPage++ < desiredPages)) {
+    results = await api.itemSearch({ keywords, itemPage })
+    items = items.concat(get(results, 'itemSearchResponse.items.item'))
+  }
+
+  items = items
     .map(({ detailPageURL, itemAttributes, smallImage }) => ({
       name: itemAttributes.title,
       price: {
@@ -36,12 +49,14 @@ export const amazonItemSearch = async productName => {
       thumbnailUrl: get(smallImage, 'url')
     }))
 
-  console.log('Amazon Results', items)
-  console.log('Common Words', findCommonWords(
+  const commonWords = findCommonWords(
     keywords,
     items
       .map(({ name }) => name)
-  ))
+  )
 
-  return items
+  return {
+    items,
+    commonWords,
+  }
 }

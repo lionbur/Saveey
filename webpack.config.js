@@ -23,10 +23,14 @@ var options = {
     popup: path.join(__dirname, "src", "js", "popup.js"),
     options: path.join(__dirname, "src", "js", "options.js"),
     background: path.join(__dirname, "src", "js", "background.js"),
-    content: path.join(__dirname, "src", "js", "content.js")
+    content: path.join(__dirname, "src", "js", "content.js"),
+    inject: path.join(__dirname, "src", "js", "inject.js")
   },
   chromeExtensionBoilerplate: {
-    notHotReload: ["content"]
+    notHotReload: [
+      "content",
+      "inject"
+    ]
   },
   output: {
     path: path.join(__dirname, "build"),
@@ -77,6 +81,10 @@ var options = {
           ...JSON.parse(content.toString())
         }))
       }
+    }, {
+      from: path.join(__dirname, "src", "css", "content.css"),
+    }, {
+      from: path.join(__dirname, "src", "css", "inject.css"),
     }]),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "src", "popup.html"),
@@ -92,6 +100,11 @@ var options = {
       template: path.join(__dirname, "src", "background.html"),
       filename: "background.html",
       chunks: ["background"]
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, "src", "inject.html"),
+      filename: "inject.html",
+      chunks: ["inject"]
     }),
     new WriteFilePlugin()
   ]

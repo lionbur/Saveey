@@ -1,1 +1,1 @@
-import '../img/icon-128.png'
+import './background/index'
