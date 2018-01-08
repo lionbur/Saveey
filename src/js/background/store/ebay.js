@@ -1,7 +1,7 @@
 import { observable, action } from 'mobx'
 
 import { ebayItemSearch } from "../../lib/saveeyProductSearch/index"
-import amazon from './amazon'
+import { getCountryCode } from "./countryCode"
 import log from './log'
 
 class eBayStore {
@@ -12,7 +12,10 @@ class eBayStore {
     const { cache } = this
 
     if (!cache[keywords]) {
-      cache[keywords] = await ebayItemSearch(keywords)
+      cache[keywords] = await ebayItemSearch({
+        keywords,
+        availableToCountryCode: await getCountryCode(),
+      })
       this.items.set(keywords, cache[keywords].items)
     }
     log({ ebay: this })

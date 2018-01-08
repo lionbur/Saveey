@@ -7,7 +7,11 @@ const convertPrice = price => price && ({
 })
 
 const ebayAppName = 'Saveey-saveey-PRD-d5d8a3c47-a4f4fc2e'
-export const ebayItemSearch = async (rawKeywords, availableToCountryCode = 'IL') => {
+export const ebayItemSearch = async (
+  {
+    keywords: rawKeywords,
+    availableToCountryCode,
+  }) => {
   const keywordArray = rawKeywords.split(' ')
   const keywords = `@${Math.round(keywordArray.length / 2)} ${rawKeywords}`
   const api = new EbayApi({ ebayAppName })
