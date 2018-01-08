@@ -19,16 +19,18 @@ export const ebayItemSearch = async (
   const results = await api.findItemsByKeywords({
     keywords,
     'ItemFilter.AvailableTo': availableToCountryCode,
+    'outputSelector': 'SellerInfo',
   })
   const items = castArray(
     get(results, 'findItemsByKeywordsResponse[0].searchResult[0].item') || []
   )
-    .map(({ title, sellingStatus, viewItemURL, galleryURL, shippingInfo }) => ({
+    .map(({ title, sellingStatus, viewItemURL, galleryURL, shippingInfo, sellerInfo }) => ({
       name: title[0],
       price: convertPrice(get(sellingStatus[0], 'currentPrice[0]')),
       shippingCost: convertPrice(get(shippingInfo[0], 'shippingServiceCost[0]')),
       url: viewItemURL[0],
       thumbnailUrl: galleryURL[0],
+      sellerScore: get(sellerInfo[0], 'positiveFeedbackPercent[0]')
     }))
 
   return items

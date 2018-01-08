@@ -8,46 +8,52 @@ import sendMessage from '../helpers/sendMessage'
 import { detectedCommonKeywords, updateResults } from "../../actions"
 
 class ResultsStore {
+  cache = {}
   keywordsForProductName = {}
   commonWordsForKeywords = {}
 
   async itemSearch(productName, tabId) {
-    const { keywordsForProductName, commonWordsForKeywords } = this
+    const { keywordsForProductName, commonWordsForKeywords, cache } = this
 
     if (!keywordsForProductName[productName]) {
-      const items = await ebay.itemSearch(productName)
+      const ebayItems = await ebay.itemSearch(productName)
 
       const commonWords = findCommonWords(
         productName,
-        items
+        ebayItems
           .map(({ name }) => name)
       )
 
       const keywords = Object.keys(commonWords).join(' ')
 
-      keywordsForProductName[productName] = keywords
+      tabs.setKeywordsForTab(keywords, tabId)
+      sendMessage(tabId, detectedCommonKeywords(commonWords))
+      this.updateTab(tabId, ebayItems)
+
+      const amazonItems = await amazon.itemSearch(keywords)
+
       commonWordsForKeywords[keywords] = commonWords
+      cache[keywords] = [
+        ...ebayItems,
+        ...amazonItems,
+      ]
+      keywordsForProductName[productName] = keywords
+
+      this.updateTab(tabId, cache[keywords])
+    } else {
+      const keywords = keywordsForProductName[productName]
+      const commonWords = commonWordsForKeywords[keywords]
+
+      tabs.setKeywordsForTab(keywords, tabId)
+      sendMessage(tabId, detectedCommonKeywords(commonWords))
+
+      this.updateTab(tabId, cache[keywords])
     }
-
-    const keywords = keywordsForProductName[productName]
-    const commonWords = commonWordsForKeywords[keywords]
-
-    tabs.setKeywordsForTab(keywords, tabId)
-    sendMessage(tabId, detectedCommonKeywords(commonWords))
-    this.updateTab(tabId, keywords)
-
-    await amazon.itemSearch(keywords)
-    this.updateTab(tabId, keywords)
   }
 
-  updateTab(tabId, keywords) {
-    sendMessage(tabId, updateResults(combineResults(keywords)))
+  updateTab(tabId, results) {
+    sendMessage(tabId, updateResults(results))
   }
 }
-
-export const combineResults = keywords => [
-  ...toJS(amazon.items.get(keywords) || []),
-  ...toJS(ebay.items.get(keywords) || []),
-]
 
 export default new ResultsStore()

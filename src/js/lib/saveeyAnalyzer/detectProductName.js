@@ -40,10 +40,13 @@ export function detectProductName(parent, maxTop) {
   const titleWords = breakIntoWords(cleanTitle)
   const escapeRegExp = str => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
 
+  console.log({ titleWords })
+
   const titleRegExp = new RegExp(
     titleWords
       .map(escapeRegExp)
-      .join('|')
+      .join('|'),
+    'i'
   )
 
   const searchCache = new Map()
@@ -70,6 +73,8 @@ export function detectProductName(parent, maxTop) {
       const { fontSize } = getComputedStyle(node.parentElement)
 
       const score = getScore(titleWords, nodeWords) * toPixels(fontSize)
+
+      console.log({ bestScore, node })
 
       searchCache.set(node, score)
       if (score > bestScore) {

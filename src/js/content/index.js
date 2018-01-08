@@ -4,7 +4,9 @@ import { createFloatingWindow } from "./floatingWindow"
 
 (async function () {
   try {
-    const { productName, buyButton, butButtonOffset } = await detect(document.body)
+    const { productName, buyButton } = await detect(document.body)
+
+    console.log('detection', productName, buyButton)
 
     if (productName) {
       createFloatingWindow({

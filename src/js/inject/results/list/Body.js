@@ -12,12 +12,19 @@ const Container = styled.section`
   overflow-y: auto;
 `
 
+const getScoreText = value => value
+  ? `${Array(Math.round((value || 0) / 20))
+      .fill(null)
+      .map(_ => '\u2b50')
+      .join('')} `
+  : ''
+
 export default ({ data, filter }) => (
   <Container>
-    {data.map(({ name, thumbnailUrl, price, url, shippingCost }, index) => (
+    {data.map(({ name, thumbnailUrl, price, url, shippingCost, sellerScore }, index) => (
       <ListItem key={`${url}${index}`} href={url}>
         <Image src={thumbnailUrl}/>
-        <Name {...{filter}}>{name}</Name>
+        <Name {...{filter}}>{`${getScoreText(sellerScore)}${name}`}</Name>
         <Price {...{price, shippingCost}} />
       </ListItem>))}
   </Container>

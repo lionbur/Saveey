@@ -36,7 +36,7 @@ export default class {
 
   makeOperation = operation => async (
     {
-      responseGroup = 'ItemAttributes,Offers,Images',
+      responseGroup = 'ItemAttributes,OfferFull,Images',
       searchIndex = 'All',
       service = 'AWSECommerceService',
       ...rest
