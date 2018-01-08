@@ -1,5 +1,4 @@
 import AmazonApi from './api'
-import { translate } from '../common'
 import { get, castArray } from 'lodash'
 
 import { productNameToKeywords, findCommonWords } from '../common'
@@ -17,13 +16,8 @@ const extractFloat = s => s && parseFloat(
   s.replace(/(?![\d.]+)./g, '')
 )
 
-export const amazonItemSearch = async productName => {
+export const amazonItemSearch = async keywords => {
   const api = new AmazonApi({ awsId, awsTag, awsSecret })
-  const keywords = (await translate(
-    productNameToKeywords(productName),
-    { to: 'en' }
-  ))
-    .toLowerCase()
 
   let itemPage = 1
   let results = await api.itemSearch({ keywords, itemPage })
@@ -31,7 +25,7 @@ export const amazonItemSearch = async productName => {
   const totalPages = parseInt(get(results, 'itemSearchResponse.items.totalPages'))
   const desiredResults = Math.min(10, totalResults)
   const desiredPages = Math.min(1, totalPages)
-  let items = castArray(get(results, 'itemSearchResponse.items.item'))
+  let items = castArray(get(results, 'itemSearchResponse.items.item') || [])
 
   while ((items.length < desiredResults) && (itemPage++ < desiredPages)) {
     results = await api.itemSearch({ keywords, itemPage })

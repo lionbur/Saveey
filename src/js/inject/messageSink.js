@@ -1,7 +1,9 @@
+import { action } from 'mobx'
+
 import { detectedProduct, detectedKeywords, detectedCommonKeywords, updateResults } from "../actions"
 import { detected, results } from './store'
 
-chrome.runtime.onMessage.addListener(({ type, payload }) => {
+chrome.runtime.onMessage.addListener(action(({ type, payload }) => {
   console.log('message', type, payload)
   switch (type) {
     case detectedKeywords.TYPE:
@@ -13,11 +15,11 @@ chrome.runtime.onMessage.addListener(({ type, payload }) => {
       break
 
     case updateResults.TYPE:
-      payload.forEach(result => results.items.push(result))
+      results.items = payload
       results.isEmpty = false
       break
   }
-})
+}))
 
 const { searchParams } = new URL(location)
 const payload = JSON.parse(searchParams.get('payload'))

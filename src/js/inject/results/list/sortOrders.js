@@ -1,4 +1,4 @@
-export const BY_RELEVANCY = 'Relevancy'
+export const BY_RELEVANCY = 'Best Match'
 export const BY_PRICE_ASC = 'Price (low to high)'
 export const BY_PRICE_DESC = 'Price (high to low)'
 export const BY_NAME_ASC = 'Name (A to Z)'

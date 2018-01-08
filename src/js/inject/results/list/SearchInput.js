@@ -4,7 +4,7 @@ import SearchInput from 'react-search-input'
 
 export default styled(SearchInput)`
   flex: 1;
-  padding: 10px 10px;
+  padding: 5px 0;
   position: relative;
   
   &::before {
@@ -15,18 +15,18 @@ export default styled(SearchInput)`
     z-index: 3;
     height: 15px;
     font-size: 20px;
-    top: 11px;
-    left: 16px;
+    top: 8px;
+    left: 0;
     line-height: 32px;
     opacity: 0.6;
   }
   
   & > input {
     width: 100%;
-    font-size: 18px;
+    font-size: 14px;
     border: none;
     line-height: 22px;
-    padding: 5px 10px 5px 25px;
+    padding: 0px 0px 0px 19px;
     height: 32px;
     position: relative;
     background-color: transparent;

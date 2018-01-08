@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import ListItem from './ListItem'
 import Image from './Image'
 import Name from './Name'
+import Price from './Price'
 
 const Container = styled.section`
   flex: 1;
@@ -13,11 +14,11 @@ const Container = styled.section`
 
 export default ({ data, filter }) => (
   <Container>
-    {data.map(({ name, thumbnailUrl, price: {amount}, url }, index) => (
-      <ListItem key={`${url}${index}`}>
+    {data.map(({ name, thumbnailUrl, price, url }, index) => (
+      <ListItem key={`${url}${index}`} href={url}>
         <Image src={thumbnailUrl}/>
         <Name {...{filter}}>{name}</Name>
-        <price>{amount}</price>
+        <Price {...price} />
       </ListItem>))}
   </Container>
 )

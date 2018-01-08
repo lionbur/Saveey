@@ -5,10 +5,16 @@ import amazon from './amazon'
 import log from './log'
 
 class eBayStore {
+  cache = {}
   @observable items = new Map()
 
   @action async itemSearch(keywords) {
-    this.items.set(keywords, (await ebayItemSearch(keywords)).items)
+    const { cache } = this
+
+    if (!cache[keywords]) {
+      cache[keywords] = await ebayItemSearch(keywords)
+      this.items.set(keywords, cache[keywords].items)
+    }
     log({ ebay: this })
   }
 }

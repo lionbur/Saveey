@@ -33,6 +33,7 @@ function createWindow(payload) {
     </header>
   `
 
+  root.querySelector('button').onclick = () => document.body.removeChild(root)
   root.appendChild(createIframe(payload))
 
   document.body.appendChild(root)

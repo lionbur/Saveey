@@ -7,16 +7,22 @@ const convertPrice = price => price && ({
 })
 
 const ebayAppName = 'Saveey-saveey-PRD-d5d8a3c47-a4f4fc2e'
-export const ebayItemSearch = async keywords => {
+export const ebayItemSearch = async (rawKeywords, availableToCountryCode = 'IL') => {
+  const keywordArray = rawKeywords.split(' ')
+  const keywords = `@${Math.round(keywordArray.length / 2)} ${rawKeywords}`
   const api = new EbayApi({ ebayAppName })
 
-  const results = await api.findItemsIneBayStores({ keywords })
+  const results = await api.findItemsByKeywords({
+    keywords,
+    'ItemFilter.AvailableTo': availableToCountryCode,
+  })
   const items = castArray(
-    get(results, 'findItemsIneBayStoresResponse[0].searchResult[0].item')
+    get(results, 'findItemsByKeywordsResponse[0].searchResult[0].item') || []
   )
-    .map(({ title, sellingStatus, viewItemURL, galleryURL }) => ({
+    .map(({ title, sellingStatus, viewItemURL, galleryURL, shippingInfo }) => ({
       name: title[0],
       price: convertPrice(get(sellingStatus[0], 'currentPrice[0]')),
+      shippingCost: convertPrice(get(shippingInfo[0], 'shippingServiceCost[0]')),
       url: viewItemURL[0],
       thumbnailUrl: galleryURL[0],
     }))

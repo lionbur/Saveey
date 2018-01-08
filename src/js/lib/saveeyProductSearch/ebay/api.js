@@ -30,4 +30,6 @@ export default class {
       .json()
 
   findItemsIneBayStores = this.makeOperation('findItemsIneBayStores')
+
+  findItemsByKeywords = this.makeOperation('findItemsByKeywords')
 }

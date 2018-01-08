@@ -1,34 +1,45 @@
 import { observable } from 'mobx'
 
-import { amazonItemSearch } from "../../lib/saveeyProductSearch/index"
+import { amazonItemSearch } from "../../lib/saveeyProductSearch"
 import tabs from './tabs'
 import ebay from './ebay'
 import log from './log'
+import { combineResults } from "./results"
 import sendMessage from '../helpers/sendMessage'
-import { detectedCommonKeywords } from "../../actions"
+import { detectedCommonKeywords, updateResults } from "../../actions"
 
 class AmazonStore {
+  cache = {}
   @observable items = new Map()
   @observable commonWords = {}
 
   async itemSearch(productName, tabId) {
-    const { items, commonWords } = await amazonItemSearch(productName)
-    const keywords = Object.keys(commonWords).join(' ')
+    const { cache } = this
 
-    if (!tabs.has(keywords)) {
-      tabs.set(keywords, [tabId])
-    } else {
-      tabs.get(keywords).push(tabId)
+    if (!cache[productName]) {
+      const results = await amazonItemSearch(productName)
+      const { items, commonWords } = results
+      const keywords = Object.keys(commonWords).join(' ')
+
+      cache[productName] = {
+        items,
+        commonWords,
+        keywords
+      }
+      this.commonWords[keywords] = commonWords
+      this.items.set(keywords, items)
     }
 
+    const { commonWords, keywords } = cache[productName]
+
+    tabs.setKeywordsForTab(keywords, tabId)
     sendMessage(tabId, detectedCommonKeywords(commonWords))
+    sendMessage(tabId, updateResults(combineResults(keywords)))
+    console.log('results', keywords, combineResults(keywords))
 
-    require('./results')
-
-    this.commonWords[keywords] = commonWords
-    this.items.set(keywords, items)
-
-    ebay.itemSearch(keywords)
+    await ebay.itemSearch(keywords)
+    sendMessage(tabId, updateResults(combineResults(keywords)))
+    console.log('results', keywords, combineResults(keywords))
 
     log({ amazon: this })
   }
