@@ -12,8 +12,8 @@ export const ebayItemSearch = async (
     keywords: rawKeywords,
     availableToCountryCode,
   }) => {
-  const keywordArray = rawKeywords.split(' ')
-  const keywords = `@${Math.round(keywordArray.length / 2)} ${rawKeywords}`
+//  const keywordArray = rawKeywords.split(' ')
+  const keywords = rawKeywords // `@${Math.round(keywordArray.length / 2)} ${rawKeywords}`
   const api = new EbayApi({ ebayAppName })
 
   const results = await api.findItemsByKeywords({
@@ -31,7 +31,5 @@ export const ebayItemSearch = async (
       thumbnailUrl: galleryURL[0],
     }))
 
-  return {
-    items
-  }
+  return items
 }

@@ -1,10 +1,15 @@
 import { observable } from 'mobx'
+import { without } from 'lodash'
 
 import { translate, productNameToKeywords } from "../../lib/saveeyProductSearch"
-import amazon from './amazon'
+import results from './results'
 import translations from './translations'
 
 const detected = observable.shallowMap()
+
+const badWords = [ 'a' ]
+
+const cleanProductName = name => without(name.split(' '), ...badWords).join(' ')
 
 detected.observe(async ({ type, name, newValue }) => {
   switch (type) {
@@ -16,7 +21,7 @@ detected.observe(async ({ type, name, newValue }) => {
         || (translations[keywords] = (await translate(keywords, { to: 'en' }))
             .toLowerCase())
 
-      amazon.itemSearch(translatedProductName, parseInt(name))
+      results.itemSearch(cleanProductName(translatedProductName), parseInt(name))
       break
     }
   }

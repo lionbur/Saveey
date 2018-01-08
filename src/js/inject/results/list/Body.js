@@ -14,11 +14,11 @@ const Container = styled.section`
 
 export default ({ data, filter }) => (
   <Container>
-    {data.map(({ name, thumbnailUrl, price, url }, index) => (
+    {data.map(({ name, thumbnailUrl, price, url, shippingCost }, index) => (
       <ListItem key={`${url}${index}`} href={url}>
         <Image src={thumbnailUrl}/>
         <Name {...{filter}}>{name}</Name>
-        <Price {...price} />
+        <Price {...{price, shippingCost}} />
       </ListItem>))}
   </Container>
 )

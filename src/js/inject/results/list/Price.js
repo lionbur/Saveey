@@ -5,6 +5,8 @@ import formatNum from 'format-num'
 const Container = styled.div`
   width: 64px;
   text-align: right;
+  display: flex;
+  flex-direction: column;
 `
 
 const Currency = styled.span`
@@ -21,7 +23,15 @@ const Amount = ({ children }) => (<span>
   {children && formatAmount(children)}
 </span>)
 
-export default ({ amount, currencyCode }) => (<Container>
+const Row = styled.span``
+
+const Price = ({ prefix, amount, currencyCode }) => (<Row>
+  {prefix && <span>{prefix}</span>}
   <Currency>{currencyCode}</Currency>
   <Amount>{amount}</Amount>
+</Row>)
+
+export default ({ price, shippingCost }) => (<Container>
+  <Price {...price}/>
+  {shippingCost && <Price prefix={'\u2708'} {...shippingCost}/>}
 </Container>)

@@ -1,7 +1,6 @@
-import { observable } from 'mobx'
-
 import { detected } from './store'
 import { detectedProduct } from "../actions"
+import './store/debug'
 
 chrome.runtime.onMessage.addListener(({ type, payload }, sender) => {
   switch (type) {

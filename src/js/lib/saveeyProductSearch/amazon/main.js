@@ -43,14 +43,5 @@ export const amazonItemSearch = async keywords => {
       thumbnailUrl: get(smallImage, 'url')
     }))
 
-  const commonWords = findCommonWords(
-    keywords,
-    items
-      .map(({ name }) => name)
-  )
-
-  return {
-    items,
-    commonWords,
-  }
+  return items
 }
