@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "animate-css-styled-components": "0.0.20",
+    "currency-symbol-map": "^4.0.3",
     "format-num": "^1.0.0",
     "lodash": "^4.17.4",
     "mobx": "^3.4.1",
