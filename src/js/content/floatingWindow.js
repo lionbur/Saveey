@@ -9,8 +9,6 @@ function createWindow(payload) {
 
   const root = document.createElement('div')
   root.className = 'sav-window'
-  root.style.left = 0
-  root.style.top = 0
   root.style.width = `${winWidth}px`
   root.style.height = `${winHeight}px`
 
