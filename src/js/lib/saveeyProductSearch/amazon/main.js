@@ -16,21 +16,16 @@ const extractFloat = s => s && parseFloat(
   s.replace(/(?![\d.]+)./g, '')
 )
 
-export const amazonItemSearch = async keywords => {
+export const amazonItemSearch = async ({
+  keywords,
+  itemPage,
+}) => {
   const api = new AmazonApi({ awsId, awsTag, awsSecret })
 
-  let itemPage = 1
-  let results = await api.itemSearch({ keywords, itemPage })
+  const results = await api.itemSearch({ keywords, itemPage })
   const totalResults = parseInt(get(results, 'itemSearchResponse.items.totalResults'))
   const totalPages = parseInt(get(results, 'itemSearchResponse.items.totalPages'))
-  const desiredResults = Math.min(10, totalResults)
-  const desiredPages = Math.min(1, totalPages)
   let items = castArray(get(results, 'itemSearchResponse.items.item') || [])
-
-  while ((items.length < desiredResults) && (itemPage++ < desiredPages)) {
-    results = await api.itemSearch({ keywords, itemPage })
-    items = items.concat(get(results, 'itemSearchResponse.items.item'))
-  }
 
   items = items
     .map(({ detailPageURL, itemAttributes, smallImage }) => ({
@@ -43,5 +38,9 @@ export const amazonItemSearch = async keywords => {
       thumbnailUrl: get(smallImage, 'url')
     }))
 
-  return items
+  return {
+    items,
+    totalResults,
+    totalPages,
+  }
 }

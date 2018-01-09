@@ -19,18 +19,42 @@ const hasLocalShipping = async url => {
   return null
 }
 
+const delay = time => new Promise(resolve => setTimeout(resolve, time))
+
 class AmazonStore {
-  async itemSearch(keywords) {
-    const items = await tryFixPrices(await amazonItemSearch(keywords))
+  async itemSearch(keywords, callback) {
+    let itemPage = 1
+    let numResults = 0
+    let totalResults = null
+    let totalPages = null
+    let timeLastFetch = null
 
-    const localShippingForItems = await Promise.all(items
-      .map(({ url }) => hasLocalShipping(url))
-    )
+    do {
+      if (itemPage > 1) {
+        await delay(Math.max(0, 2000 - (Date.now() - timeLastFetch)))
+      }
 
-    return localShippingForItems
-      .map((hasLocalShipping, index) => ({ hasLocalShipping, item: items[index] }))
-      .filter(({ hasLocalShipping }) => hasLocalShipping)
-      .map(({ item }) => item)
+      const results = await amazonItemSearch({
+        keywords,
+        itemPage,
+      })
+      timeLastFetch = Date.now()
+      itemPage++
+      numResults += results.items.length
+      totalResults = Math.min(100, totalResults || results.totalResults)
+      totalPages = Math.min(10, totalPages || results.totalPages)
+console.log({ itemPage, numResults, totalResults, totalPages })
+      const items = await tryFixPrices(results.items)
+
+      const localShippingForItems = await Promise.all(items
+        .map(({url}) => hasLocalShipping(url))
+      )
+
+      callback(localShippingForItems
+        .map((hasLocalShipping, index) => ({hasLocalShipping, item: items[index]}))
+        .filter(({hasLocalShipping}) => hasLocalShipping)
+        .map(({item}) => item))
+    } while (numResults < totalResults && itemPage < totalPages)
   }
 }
 

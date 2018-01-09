@@ -30,7 +30,11 @@ class ResultsStore {
       sendMessage(tabId, detectedCommonKeywords(commonWords))
       this.updateTab(tabId, ebayItems)
 
-      const amazonItems = await amazon.itemSearch(keywords)
+      const amazonItems = []
+      await amazon.itemSearch(keywords, amazonItemPage => {
+        amazonItems.push(...amazonItemPage)
+        this.updateTab(tabId, [...ebayItems, ...amazonItems])
+      })
 
       commonWordsForKeywords[keywords] = commonWords
       cache[keywords] = [
