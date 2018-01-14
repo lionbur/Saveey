@@ -32,6 +32,7 @@ const getScore = (a, b) => {
 const cleanText = text => text
   .trim()
   .toLowerCase()
+  .replace(/\s*\|\s*/g, ' ')
   .replace(/[()®]/g, '')
   .replace(/\s+-+\s+|,\s/g, ' ')
 
@@ -40,11 +41,12 @@ export function detectProductName(parent, maxTop) {
   const titleWords = breakIntoWords(cleanTitle)
   const escapeRegExp = str => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
 
-  console.log({ titleWords })
+  console.log(titleWords, parent)
 
   const titleRegExp = new RegExp(
     titleWords
       .map(escapeRegExp)
+      .map(word => `^(?:${word})$|\\s+${word}|${word}\\s+`)
       .join('|'),
     'i'
   )
@@ -52,6 +54,8 @@ export function detectProductName(parent, maxTop) {
   const searchCache = new Map()
   let bestScore = -1
   let foundNode = null
+
+  console.log(titleRegExp)
 
   do {
     const iterator = document.createNodeIterator(
@@ -74,7 +78,7 @@ export function detectProductName(parent, maxTop) {
 
       const score = getScore(titleWords, nodeWords) * toPixels(fontSize)
 
-      console.log({ bestScore, node })
+      console.log(score, node.parentElement)
 
       searchCache.set(node, score)
       if (score > bestScore) {
@@ -87,7 +91,7 @@ export function detectProductName(parent, maxTop) {
         foundNode = node
       }
     }
-  } while ((parent = parent.parentElement) && (bestScore < titleWords.length))
+  } while (parent = parent.parentElement)
 
   if (foundNode) {
     foundNode.parentElement.style.backgroundColor = 'yellow'

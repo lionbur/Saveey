@@ -1,0 +1,1 @@
+export {default as detected} from './detected'

@@ -1,6 +1,10 @@
 import { uniq } from 'lodash'
 
 export default (items, commonWords) => {
+  if (!commonWords) {
+    return items
+  }
+
   const getWordSet = name => uniq(name
     .toLowerCase()
     .split(' '))

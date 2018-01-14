@@ -22,7 +22,7 @@ const getScoreText = value => value
 export default ({ data, filter }) => (
   <Container>
     {data.map(({ name, thumbnailUrl, price, url, shippingCost, sellerScore }, index) => (
-      <ListItem key={`${url}${index}`} href={url}>
+      <ListItem key={url} href={url}>
         <Image src={thumbnailUrl}/>
         <Name {...{filter}}>{`${getScoreText(sellerScore)}${name}`}</Name>
         <Price {...{price, shippingCost}} />

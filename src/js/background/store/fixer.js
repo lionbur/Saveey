@@ -36,8 +36,8 @@ export const tryFixPrices = async items => {
 
   return items
     .map(({ price, shippingCost, ...rest }) => ({
-      ...rest,
       price: tryConvertPrice(price),
       shippingCost: tryConvertPrice(shippingCost),
+      ...rest
     }))
 }

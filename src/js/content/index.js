@@ -1,23 +1,21 @@
 import { detect } from "../lib/saveeyAnalyzer"
 
-import { createFloatingWindow } from "./floatingWindow"
+import { detectedProduct } from "../actions"
+import { detected } from './store'
+import './messageSink'
 
 (async function () {
   try {
-    const { productName, buyButton } = await detect(document.body)
+    const detectResult = await detect(document.body)
 
-    console.log('detection', productName, buyButton)
+    Object.assign(detected, detectResult)
+    console.log('detection', detected)
 
-    if (productName) {
-      createFloatingWindow({
-        productName,
-        buyButton: {
-          innerText: buyButton.button.innerText,
-          offset: buyButton.offset,
-          width: buyButton.button.clientWidth,
-          height: buyButton.button.clientHeight,
-        },
-      })
+    if (detected.productName) {
+      chrome.runtime.sendMessage(detectedProduct({
+        productName: detected.productName,
+        url: location.href,
+      }))
     }
   } catch (error) {
 //    chrome.runtime.sendMessage(detectedProduct.failure(error))

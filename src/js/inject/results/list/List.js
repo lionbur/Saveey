@@ -6,7 +6,7 @@ import { createFilter } from 'react-search-input'
 
 import sortResultsByCommonWords from '../helpers/sortResultsByCommonWords'
 import { BY_RELEVANCY, BY_PRICE_ASC, BY_PRICE_DESC, BY_NAME_ASC, BY_NAME_DESC } from "./sortOrders"
-import { results, detected } from '../../store'
+import { detected } from '../../store'
 import Header from './Header'
 import Body from './Body'
 
@@ -32,6 +32,8 @@ const sorters = {
     .sort((a, b) => b.name.toLowerCase().localeCompare(a.name.toLowerCase())),
 }
 
+let instanceId = 1
+
 @observer class List extends Component {
   @observable filter = ''
   @observable sort = BY_RELEVANCY
@@ -44,16 +46,19 @@ const sorters = {
     this.sort = sort
   }
 
+  componentWillMount() {
+    this.instanceId = instanceId++
+  }
 
   render() {
     const { filter } = this
+    const { items } = this.props
 
-    console.log('render', detected)
+    console.log('render', items, this.instanceId)
 
     const filteredItems = sorters[this.sort](
-      results.items.filter(createFilter(this.filter, KEYS_TO_FILTERS))
+      items.filter(createFilter(this.filter, KEYS_TO_FILTERS))
     )
-
 
     return (<Container>
       <Header

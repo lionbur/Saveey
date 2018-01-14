@@ -1,7 +1,6 @@
 import { observable } from 'mobx'
 
-export default observable({
-  isEmpty: true,
+export default observable.shallowObject({
   items: [],
 })
 

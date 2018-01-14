@@ -1,6 +1,7 @@
-export default function(payload) {
+export default function(productName) {
   const iframe = document.createElement('iframe')
-  iframe.src = `${chrome.extension.getURL('inject.html')}?payload=${encodeURIComponent(JSON.stringify(payload))}&protocol=${location.protocol}`
+  const search = `productName=${encodeURIComponent(productName)}&url=${location.href}`
+  iframe.src = chrome.extension.getURL(`inject.html?${search}`)
 
   return iframe
 }

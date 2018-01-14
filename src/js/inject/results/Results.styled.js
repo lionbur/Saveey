@@ -1,7 +1,6 @@
 import styled from 'styled-components'
-import { ZoomInUp } from 'animate-css-styled-components'
 
-export const Container = styled(ZoomInUp)`
+export const Container = styled.div`
   flex: 1;
   flex-direction: column;
   display: flex;

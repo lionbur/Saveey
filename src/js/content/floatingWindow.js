@@ -1,9 +1,10 @@
 import makeDraggable from './makeDraggable'
 import createStyle from './createStyle'
 import createIframe from './createIframe'
+import { detected } from './store'
 
-function createWindow(payload) {
-  const { buyButton } = payload
+function createWindow(productName) {
+  const { buyButton } = detected
   const winWidth = 500
   const winHeight = 300
 
@@ -13,7 +14,9 @@ function createWindow(payload) {
   root.style.height = `${winHeight}px`
 
   if (buyButton) {
-    const { offset, width, height } = buyButton
+    const { offset, button } = buyButton
+    const width = button.clientWidth
+    const height = button.clientHeight
 
     const docWidth = document.documentElement.clientWidth
     if (docWidth - offset.left > winWidth) {
@@ -32,7 +35,7 @@ function createWindow(payload) {
   `
 
   root.querySelector('button').onclick = () => document.body.removeChild(root)
-  root.appendChild(createIframe(payload))
+  root.appendChild(createIframe(productName))
 
   document.body.appendChild(root)
   makeDraggable(root)

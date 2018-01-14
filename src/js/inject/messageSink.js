@@ -1,10 +1,10 @@
 import { action } from 'mobx'
 
-import { detectedProduct, detectedKeywords, detectedCommonKeywords, updateResults } from "../actions"
+import { createdWindow, detectedKeywords, detectedCommonKeywords, updateResults } from "../actions"
 import { detected, results } from './store'
 
 chrome.runtime.onMessage.addListener(action(({ type, payload }) => {
-  console.log('message', type, payload)
+  console.log('floating window got message', type, payload)
   switch (type) {
     case detectedKeywords.TYPE:
       detected.keywords = payload
@@ -16,14 +16,18 @@ chrome.runtime.onMessage.addListener(action(({ type, payload }) => {
 
     case updateResults.TYPE:
       results.items = payload
-      results.isEmpty = false
       break
   }
 }))
 
 const { searchParams } = new URL(location)
-const payload = JSON.parse(searchParams.get('payload'))
+const productName = searchParams.get('productName')
+const url = searchParams.get('url')
 
-chrome.runtime.sendMessage(detectedProduct(payload))
+chrome.runtime.sendMessage(createdWindow({
+  productName,
+  url,
+}))
 
-Object.assign(detected, payload)
+detected.productName = productName
+detected.url = url

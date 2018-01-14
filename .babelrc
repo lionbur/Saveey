@@ -10,5 +10,7 @@
   "plugins": [
     "transform-decorators-legacy",
     "transform-export-extensions",
+    "transform-async-to-generator",
+    "transform-async-generator-functions",
   ]
 }
